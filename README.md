@@ -6,7 +6,7 @@ is a simple todo app
 * Spring boot framework
 * H2 database with JdbcTemplate
 
-##Component 
+## Component 
 - **User**.
 - **Task associated with it**: 
   1. **Status** : to filter task status in Enum.  
@@ -18,7 +18,7 @@ is a simple todo app
   1. sorting algorithm or searching algorithm
   2. an email service.
 <br> it's Like a Mapper in facade pattern.
-###Cons -- needs improve
+### Cons -- needs improve
 1. Password is not encrypted 
 also, in order to check user I was just
 store as a property which is bad for security purposes.
@@ -30,7 +30,7 @@ we could do better.
 3. Also, about structure there is no need for getTask or getTasks
 it's useless, it's a privacy violation.
 
-###Possible solution
+### Possible solution
  **-Solution for problem #1:** we could delete a pass property, but how can we save it as a password in database?.
 I think we could use it as a separated string that based as extra and encrypted when saving "creating new user".
 When user gets to login we take his pass and encrypted and check if they match
