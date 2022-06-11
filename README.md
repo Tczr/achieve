@@ -2,11 +2,11 @@
 # Achieve 
 is a simple todo app
 
-## Technology used
+### Technology used
 * Spring boot framework
 * H2 database with JdbcTemplate
 
-## Component 
+### Component 
 - **User**.
 - **Task associated with it**: 
   1. **Status** : to filter task status in Enum.  
