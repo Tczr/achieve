@@ -22,7 +22,7 @@ it is a simple todo app
 1. Password is not encrypted 
 also, in order to check user I was just
 store as a property which is bad for security purposes.
-2. the structure is too messy 😅.<br>
+2. the structure is too messy.<br>
 that's as a result of separated concern and making fewer calls to database,
 it would be not efficient to call whenever user get tasks.
 but we faced a problem here that is whenever user updated or deleted or added a task it's separated from user tasks list which is a separated object that holde tasks from database. 
