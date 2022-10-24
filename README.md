@@ -14,7 +14,7 @@ it is a simple todo app
 - **Controller**: to manage request.
 - **Handler** : to get Data from Database.
 - **Dao** : the actual implementation of database query.
-- **Helper** : to give helper services like:
+- **Helper** :Provide assistance services such as:
   1. sorting algorithm or searching algorithm
   2. an email service.
 
