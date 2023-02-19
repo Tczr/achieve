@@ -4,7 +4,7 @@
 thanks for checking out this repo.
 
 ## About
-Achieve comes from achievements,A simple api to serve users achievements.
+this is the back-end part for delivering simple data through apis.
 
 ## Where to find everything 
  
@@ -13,4 +13,4 @@ Achieve comes from achievements,A simple api to serve users achievements.
  The [`achieve-ui`](https://github.com/Tczr/achieve-ui) repository contains the front-end code 
 
  
- **Unfortunately I didn't write any test**
+**Unfortunately I didn't write any test**
