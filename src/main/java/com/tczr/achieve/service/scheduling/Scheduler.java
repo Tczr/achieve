@@ -8,7 +8,11 @@ import java.time.LocalDate;
         use = JsonTypeInfo.Id.NAME,
         include = JsonTypeInfo.As.PROPERTY,
         property = "scheduler")
+<<<<<<< HEAD
 @JsonSubTypes.Type(value = Schedule.class, name = "scheduler")*/
+=======
+@JsonSubTypes.Type(value = Schedule.class, text = "scheduler")*/
+>>>>>>> 5df7255 (refactor the whole project)
 public interface Scheduler {
     void setCalender(LocalDate start, LocalDate end);
     void dailyTimeRepetition();

@@ -13,128 +13,66 @@
  */
 
 package com.tczr.achieve.task;
-
-import com.tczr.achieve.service.Helper;
 import com.tczr.achieve.shared.Handler;
-import com.tczr.achieve.shared.Crud;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-@Service
-public class TaskHandler implements Handler<Task> {
+import java.util.Optional;
 
-    private final Crud taskDAO;
-    private List<Task> data;
-    private static int lastId;
+@Service
+public class TaskHandler {
 
     @Autowired
-    public TaskHandler(Crud taskDAO)
-    {
-        this.taskDAO=taskDAO;
-        data=taskDAO.getList();
-        Helper.quickSort(data);
-        lastId = getLastId();
-
+    private final TaskRepo taskrepo;
+    public TaskHandler(TaskRepo taskRepo){
+        this.taskrepo=taskRepo;
     }
-
-    @Override
-    public Task getBy(Object id) {
-     return getBy((int)id);
+    
+     
+    public Task getById(int taskId) {
+        return taskrepo.findById(taskId).get();
     }
 
 
-    private Task getBy(Integer id) {
-        // problem when inserting, I will be dealing with the list of mine not with the db
-        // for speed and calling purposes so when adding new task it not going to be auto Increment,
-        // so whe should probably make a static id increasing at last index, and when remove don't decrease it to make it realistic;
-        int index = search(id);
-
-        return index != -1 ? data.get(index) : null;
+     
+    public List<Task> getTasksOf(int userId) {
+        return taskrepo.getAllByUserId(userId);
+    }
+    public List<Task> getTasksSorted(Sort sortMethod, int userId){
+        return taskrepo.getAllByUserId(userId, sortMethod);
     }
 
-    @Override
-    public List<Task> getList() {
-        return data;
-    }
-
-    @Override
+     
     public boolean update(Task object) {
-        //to be in parallel
-        int index = search(object.getId());
-        if(index != -1);
-            data.set(index, object);
-
-        return taskDAO.update(object);
+        try {taskrepo.save(object);}
+        //if there was an error return false
+        catch (IllegalArgumentException exception){return false;}
+        // else return true
+        return true;
     }
 
-    @Override
+     
     public boolean add(Task object) {
-        //to be in parallel
-        lastId++;
-        object.setId(lastId);
-        data.add(object);
-
-        return taskDAO.insert(object);
+        return update(object);
     }
 
-    @Override
+     
     public boolean delete(Task object) {
-        //to be in parallel
-        data.remove(object);
-
-        return taskDAO.delete(object);
+        try {taskrepo.delete(object);}
+        //if there was an error return false
+        catch (IllegalArgumentException exception){return false;}
+        // else return true
+        return true;
     }
 
-    @Override
+     
     public boolean delete(int id) {
-        Task task = null;
-        int index = search(id);
-
-        if(index != -1)
-            task = data.remove(index);
-
-
-
-        return taskDAO.delete(task);
-
-    }
-
-    public List<Task> getUserTask(int userid)
-    {
-        return searchForUserTasks(userid);
-    }
-
-    private int search(int id) {
-        int start = 0, end = data.size()-1;
-        while (start<=end) {
-            int mid = start+(end-start)/2;
-
-            if(data.get(mid).getId() > id)
-                end=mid-1;
-            else if(data.get(mid).getId() < id)
-                start=mid+1;
-            else
-                return mid;
-        }
-        return -1;
-    }
-
-    private List<Task> searchForUserTasks(int id)
-    {
-        List<Task> userTasks= new ArrayList<>();
-        for(Task task : data)
-        {
-            if(task.getUserId()==id)
-                userTasks.add(task);
-        }
-
-        return userTasks;
-    }
-
-    private int getLastId() {
-        int index = data.size()-1;
-        return data.get(index).getId();
+        try {taskrepo.deleteById(id);}
+        //if there was an error return false
+        catch (IllegalArgumentException exception){return false;}
+        // else return true
+        return true;
     }
 }

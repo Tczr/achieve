@@ -5,38 +5,31 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.ToString;
 
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Transient;
 import java.time.LocalDate;
 
 import static java.time.temporal.ChronoUnit.DAYS;
 
 @ToString
+@Embeddable
 public class Schedule implements Scheduler{
+    @Column(name = "scheduled_start")
     private LocalDate start;
+    @Column(name = "scheduled_end")
     private LocalDate end;
+    @Transient
     private long period;
 
     public Schedule()
-    {
-        /*start = LocalDate.now();
-        end= LocalDate.MAX;
-        dailyTimeRepetition();*/
-    }
+    {}
     public Schedule(LocalDate start,LocalDate end)
     {
         setCalender(start, end);
         dailyTimeRepetition();
     }
-
-/*
-    @JsonCreator
-    public Schedule(@JsonProperty("start") String start,@JsonProperty("endDate") String end)
-    {
-        this.start= LocalDate.parse(start);
-        this.end=LocalDate.parse(end);
-        dailyTimeRepetition();
-    }
-*/
-
     public void setStart(LocalDate start) {
         this.start = start;
     }

@@ -1,5 +1,6 @@
 package com.tczr.achieve.task;
 
+import javax.persistence.Embeddable;
 public enum Status {
     ACTIVE,
     DELAYED,

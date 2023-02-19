@@ -2,6 +2,8 @@ package com.tczr.achieve.user;
 
 import com.tczr.achieve.shared.Handler;
 import com.tczr.achieve.shared.Authorizable;
+
+import com.tczr.achieve.task.TaskHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -16,47 +18,55 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("api/v1/user")
-public class UserController {
+class UserController {
 
     @Autowired
-    private Handler<User> userHandler;
+    private final UserHandler userHandler;
+    @Autowired
+    private final TaskHandler taskHandler;
 
-    public UserController(Handler userHandler)
+    public UserController(UserHandler userHandler, TaskHandler taskHandler)
     {
         this.userHandler=userHandler;
+        this.taskHandler=taskHandler;
         System.out.println("---------------\n"+userHandler);
 
     }
 
-    @GetMapping(path = "/get/users")
-    public ResponseEntity<List<User>> getAllUsers(){
-        List<User> users = userHandler.getList();
-        return (users!=null && users.size()>0)?
-                new ResponseEntity<>(users, HttpStatus.OK) :
-                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
     @GetMapping(path = "/get/{obj}")
-    public ResponseEntity<User> getUserByName(@PathVariable Object obj)
+    public ResponseEntity<User> getUserBy(@PathVariable Object obj)
     {
         User user=null;
         try {
             user = userHandler.getBy(obj);
+        }catch (NoSuchElementException exception)
+        {exception.printStackTrace(); return new ResponseEntity<>(HttpStatus.NOT_FOUND); }
+        finally {
+            if (user != null) {
+                user.setTodoList(
+                        taskHandler.getTasksOf(user.getUserId())
+                );
+                return new ResponseEntity<>(user,HttpStatus.OK);
+            }
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
 
-        }catch (NoSuchElementException exception){ return new ResponseEntity<>(HttpStatus.NOT_FOUND); }
-
-        return new ResponseEntity<>(user,HttpStatus.OK);
     }
     @PostMapping(path="/login")
     public ResponseEntity<User> login(@RequestBody Map<String, Object> mapper){
-        userHandler = (UserHandler)userHandler;
         Authorizable authentication= (Authorizable) userHandler;
         Optional user=Optional.empty();
         try {
-             user =authentication.checkInfo(mapper.get("email"),mapper.get("password"));
+             user = authentication.checkInfo(mapper.get("email"),mapper.get("password"));
         }catch (Exception ex){
+            ex.printStackTrace();
             System.out.println("no such element");
         }finally {
             if(!user.isEmpty()) {
+                 User user1 = (User)user.get();
+                 user1.setTodoList(
+                         taskHandler.getTasksOf(user1.getUserId())
+                 );
                 System.out.println(user.get());
                 return new ResponseEntity<>((User) user.get(), HttpStatus.OK);
             }

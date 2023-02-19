@@ -4,6 +4,4 @@ import java.io.Serializable;
 
 public interface RegularProcedure extends Serializable {
 
-    int getId();
-
 }
